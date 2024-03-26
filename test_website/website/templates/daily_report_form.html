@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    h2{
+        background: white;
+        width: 1700px;
+        height: 100px;
+        color: #000;
+        font-family: 'OloronTryout', serif;
+        font-size: 38px;
+        font-weight: 500;
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+    .form-box{
+        border: 1px solid #4FBFA5;
+        border-radius: 85px 77px 41px 38px;
+        background-color: #4FBFA5;
+        width: 1000px;
+        height: 100%;
+        margin: 0 auto;  
+        padding-top: 20px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 20px;
+        font-weight: 400;
+    }
+    .form-box form {
+        position: relative;
+        width: 400px;
+        height: 100%;
+        margin: auto;
+        padding: 12px 10px;
+        color: white;
+    }
+    .form-box form label{
+        position: absolute;
+        width: 200px;
+    }
+    .form-box form select{
+        width: 190px;
+    }
+    .form-box form select option{
+        background-color: #94d1c3;
+        font-size: 18px;
+        
+    }
+    .form-box form select,
+    .form-box form input {
+        margin: 0 0 20px 180px;
+        padding: 4px 6px;
+        border: 1px solid #00868A;
+        border-radius: 45px 0 45px 0; 
+        text-align: center;
+        background: transparent;
+        outline: none;
+        color: white;
+    }
+    .form-box button{
+        background: transparent;
+        padding: 8px 7px;
+        border: none;
+        display: block;
+        margin: 0 0 0 30px;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;    
+    }
+    .form-box button:hover{
+        border: 1px solid #00868A;
+        background-color: #00868A;
+        cursor: pointer;
+    }
+    .form-box .close{
+        display: block;
+        width: 84px;
+        position: relative;
+        top: -42px;
+        right: -551px;
+        color: white;
+        text-decoration: none;
+        font-size: 20px;   
+        font-family:'Courier New', Courier, monospace; 
+    }
+    .form-box a{
+        color: white;
+        text-decoration: none;
+        font-size: 20px;   
+        font-family:'Courier New', Courier, monospace; 
+    }
+    .form-box .quetion {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .form-box .quetion a:hover{
+        border: 1px solid #00868A;
+        background-color: #00868A;
+        cursor: pointer;
+        padding: 7px 8px ;
+    }
+</style>
+<body>
+    <h2>the form to create</h2>
+    <div class="form-box">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <a class="close" href="{% url 'report:daily_report' %}">Закрыть</a>
+    <p class="quetion">There are no saved managers? Create -> <a href="{% url 'report:manager_create' %}">create new manager</a></p>
+            <div class="new_manager" style="display: none;">
+                <form action="" method="post" class="forms">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </form>
+                <a  href="{% url 'report:daily_create' %}">Закрыть</a>
+            </div>
+        </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var createManagerLink = document.getElementById('create_manager_link');
+    var newManagerForm = document.querySelector('.new_manager');
+
+    createManagerLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        newManagerForm.style.display = 'block';
+    });
+});
+</script>
+</body>
+</html>

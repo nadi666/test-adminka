@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Report</title>
+    <script src="{% static 'js/popup.js' %}" defer></script>
+</head>
+<style>
+    *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+h1{
+    background: white;
+    width: 100%;
+    height: 100px;
+    color: #000;
+    font-family: 'OloronTryout', serif;
+    font-size: 38px;
+    font-weight: 500;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+main{
+    background-color: #4FBFA5;
+    height: 100%;
+    padding-bottom: 20px;
+}
+main .filter{
+    width: 550px;
+    height: 50px;
+    margin: 0 auto;
+    padding-top: 9px;
+    position: relative;
+}
+main form label{
+    font-size: 26px;
+    font-weight: 400;
+    color: white;
+    text-align: left;
+    margin-right: 20px;
+}
+main form select{
+    width: 200px;
+    height: 22px;
+    background: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #00868A;
+    color: white;
+}
+main form select option{
+    background: #00868A;
+    font-size: 18px ;
+}
+main .btn_filter{
+    background: transparent;
+    display: block;
+    margin: 20px 0 0 50px;
+    color: white;
+    position: absolute;
+    top: -9px;
+    right: 57px;
+    border: none;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 5px 14px;
+}
+main .btn_filter:hover{
+    border: 1px solid #00868A;
+    background-color: #00868A;
+    cursor: pointer;
+}
+main table{
+    margin: 0 auto;
+    border: none;
+    padding-top: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
+main table tr th,
+main table tr td{
+    padding: 5px 7px;
+}
+main table tr td a{
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+}
+main table tr td form button{
+    color: white;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 5px 14px;
+    cursor: pointer;
+}
+main .function{
+    width: 448px;
+    height: 43px;
+    display: block;
+    position: relative;
+    bottom: -17px;
+    left: 56px;
+}
+main .function li{
+    padding: 11px 13px;
+    list-style-type: none;
+    display: inline-block;
+}
+main .function li a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 5px 7px;
+}
+main .function a:hover{
+    background-color: #00868A;
+    cursor: pointer;
+}
+main .message{
+    width: 784px;
+    height: 46px;
+    position: absolute;
+    top: 155px;
+    left: 517px;
+}
+main .message p{
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 400;
+}
+/* popup.css */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+</style>
+<body>
+    <h1>Daily Report</h1>
+    <main>
+        <form method="POST" class="filter" action="{% url 'report:summary_report' %}">
+            {% csrf_token %}
+            <label for="month">Select month:</label>
+            <select name="month" id="month">
+                <option value="0">ALL</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            <button class="btn_filter" type="submit">Filter</button>
+        </form>
+        {% if reports %}
+            <table border="1" style="border-color: #c4c4c4; width: 1500px;">
+                <tr>
+                    <th>name of the report</th>
+                    <th>manager's name</th>
+                    <th>address</th>
+                    <th>sum</th>
+                    <th>date</th>
+                    <th colspan="2">redactor</th>
+                </tr>
+                {% for report in reports %}
+                        <tr>
+                            <td>{{ report.report_name }}</td>
+                            <td>{{ report.manager }}</td>
+                            <td>{{ report.report_address }}</td>                    
+                            <td>{{ report.report_sum }}</td>
+                            <td>{{ report.report_date }}</td>
+                            {% if report.report_date.month == today.month %}
+                                <td class="edit"><a href="{% url 'report:edit_report' report.pk %}">edit</a></td>
+                                <td class="edit"><form method="POST" action="{% url 'report:delete_report' report.pk %}">{% csrf_token %}<button type="submit">delete</button></form></td>
+                            {% else %}
+                                <td colspan="2">View only</td>
+                            {% endif %}
+                        </tr>
+                {% endfor %}
+                {% else %}  <div class="message"><p>Нет данных, удовлетворяющих заданным критериям!</p></div>
+            </table>
+        {% endif %}
+        <div class="function">
+            <li><a href="{% url 'report:daily_create' %}">Create new repor</a></li>
+            <li><a id="showPopup" href="{% url 'report:summary_report' %}">Summary</a></li>
+            <li><a href="{% url 'report:summary_report_second' %}">Summary second</a></li>
+        </div>
+    </main>
+    <div id="accessCodePopup" class="popup">
+        <div class="popup-content">
+            <form action="{% url 'report:summary_report' %}" method="post">
+                {% csrf_token %}
+                <label for="access_code">Enter access code:</label>
+                <input type="text" id="access_code" name="access_code">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    var popup = document.getElementById("accessCodePopup");
+    function showPopup() {
+        popup.style.display = "block";
+    }
+    function hidePopup() {
+        popup.style.display = "none";
+    }
+    document.getElementById("showPopup").addEventListener("click", function(event) {
+        event.preventDefault();
+        showPopup();
+    });
+
+    // Закрыть всплывающее окно, если пользователь кликает вне его области
+    document.addEventListener("click", function(event) {
+        if (event.target === popup) {
+            hidePopup();
+        }
+    });
+});
+    </script>
+</body>
+</html>
